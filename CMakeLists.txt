@@ -10,22 +10,17 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 
-add_library(${PROJECT_NAME} SHARED
-        client/Client.cpp
-        publisher/Publisher.cpp
-        service/Service.cpp
-        subscriber/Subscriber.cpp
-        timer/Timer.cpp
+add_library(${PROJECT_NAME}
+        src/client/Client.cpp
+        src/publisher/Publisher.cpp
+        src/service/Service.cpp
+        src/subscriber/Subscriber.cpp
+        src/timer/Timer.cpp
 )
 
 ament_target_dependencies(${PROJECT_NAME}
         rclcpp
 )
-
-target_include_directories(${PROJECT_NAME}
-        PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-        $<INSTALL_INTERFACE:include>)
 
 ament_export_targets(${PROJECT_NAME} HAS_LIBRARY_TARGET)
 
@@ -34,14 +29,8 @@ ament_export_dependencies(
 )
 
 install(
-        DIRECTORY
-        client
-        publisher
-        service
-        subscriber
-        timer
-
-        DESTINATION include
+        DIRECTORY include/
+        DESTINATION include/${PROJECT_NAME}
 )
 
 install(
