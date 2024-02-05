@@ -1,6 +1,6 @@
 
 cmake_minimum_required(VERSION 3.8)
-project(utilities)
+project(rosa)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -10,33 +10,47 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 
-include_directories(include)
-
-add_library(utilities
-        src/Client.cpp
-        src/Publisher.cpp
-        src/Service.cpp
-        src/Subscriber.cpp
-        src/Timer.cpp
+add_library(${PROJECT_NAME} SHARED
+        client/Client.cpp
+        publisher/Publisher.cpp
+        service/Service.cpp
+        subscriber/Subscriber.cpp
+        timer/Timer.cpp
 )
 
-ament_export_targets(utilities HAS_LIBRARY_TARGET)
-ament_target_dependencies(utilities
+ament_target_dependencies(${PROJECT_NAME}
+        rclcpp
+)
+
+target_include_directories(${PROJECT_NAME}
+        PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<INSTALL_INTERFACE:include>)
+
+ament_export_targets(${PROJECT_NAME} HAS_LIBRARY_TARGET)
+
+ament_export_dependencies(
         rclcpp
 )
 
 install(
-        DIRECTORY include
-        DESTINATION include/utilities
+        DIRECTORY
+        client
+        publisher
+        service
+        subscriber
+        timer
+
+        DESTINATION include
 )
 
 install(
-        TARGETS utilities
-        EXPORT utilities
+        TARGETS ${PROJECT_NAME}
+        EXPORT ${PROJECT_NAME}
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
         RUNTIME DESTINATION bin
-        INCLUDES DESTINATION include/utilities
+        INCLUDES DESTINATION include
 )
 
 ament_package()
