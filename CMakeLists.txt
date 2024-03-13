@@ -12,6 +12,7 @@ find_package(rclcpp REQUIRED)
 
 add_library(${PROJECT_NAME}
         src/client/Client.cpp
+        src/node/Node.cpp
         src/publisher/Publisher.cpp
         src/service/Service.cpp
         src/subscriber/Subscriber.cpp
