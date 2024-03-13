@@ -9,9 +9,7 @@ template<typename MessageT>
 class Publisher
 {
 public:
-    Publisher(rclcpp::Node* parentNode);
-
-    void publishOn(std::string const& topicName);
+    Publisher(rclcpp::Node* parentNode, std::string const& topicName);
 
     void send(MessageT const& message);
 
@@ -22,14 +20,8 @@ private:
 
 
 template<typename MessageT>
-Publisher<MessageT>::Publisher(rclcpp::Node* parentNode)
+Publisher<MessageT>::Publisher(rclcpp::Node* parentNode, std::string const& topicName)
     : _parent(parentNode)
-{
-
-}
-
-template<typename MessageT>
-void Publisher<MessageT>::publishOn(std::string const& topicName)
 {
     _publisher = _parent->create_publisher<MessageT>(topicName, 10);
 }
