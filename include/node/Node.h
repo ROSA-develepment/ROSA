@@ -8,7 +8,11 @@
 class Node : public rclcpp::Node
 {
 public:
-    Node(std::string const& name) : rclcpp::Node(name) {}
+    Node(std::string const& name);
+
+protected:
+
+    rclcpp::Logger getLogger();
 };
 
 #endif //ROS_NODE_H
