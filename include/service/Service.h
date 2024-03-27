@@ -2,6 +2,8 @@
 #ifndef ROS_SERVICE_H
 #define ROS_SERVICE_H
 
+#include "../node/Node.h"
+
 #include "rclcpp/rclcpp.hpp"
 
 #include <utility>
@@ -11,7 +13,7 @@ template<typename ServiceT>
 class Service
 {
 public:
-    Service(rclcpp::Node* parent, std::string serviceName);
+    Service(Node* parent, std::string const& serviceName);
 
 protected:
     virtual void processRequest(std::shared_ptr<typename ServiceT::Request> request,
@@ -28,7 +30,7 @@ private:
 
 
 template<typename ServiceT>
-Service<ServiceT>::Service(rclcpp::Node* parent, std::string serviceName)
+Service<ServiceT>::Service(Node* parent, std::string const& serviceName)
     : _parent(parent)
 {
     createService(serviceName);
@@ -43,8 +45,6 @@ void Service<ServiceT>::createService(std::string const& serviceName)
             this->processRequest(request, response);
         };
     _service = _parent->create_service<ServiceT>(serviceName, processRequestPointer);
-
-    RCLCPP_INFO(_parent->get_logger(), "%s service started", serviceName.c_str());
 }
 
 template<typename ServiceT>
