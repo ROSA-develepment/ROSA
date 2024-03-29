@@ -9,7 +9,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 
-add_library(${PROJECT_NAME}
+add_library(${PROJECT_NAME} SHARED
         src/client/Client.cpp
         src/node/Node.cpp
         src/publisher/Publisher.cpp
@@ -23,7 +23,7 @@ ament_target_dependencies(${PROJECT_NAME}
 )
 
 ament_export_targets(${PROJECT_NAME} HAS_LIBRARY_TARGET)
-
+ament_export_include_directories(include)
 ament_export_dependencies(
         rclcpp
 )
