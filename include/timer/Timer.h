@@ -1,6 +1,6 @@
 
-#ifndef ROS_TIMER_H
-#define ROS_TIMER_H
+#ifndef __TIMER_H__
+#define __TIMER_H__
 
 #include "rclcpp/rclcpp.hpp"
 
@@ -38,4 +38,4 @@ void Timer::createWallTimer(Object *node, Duration duration, Method &&method)
     _timer = node->create_wall_timer(duration, wallTimerFunction);
 }
 
-#endif //ROS_TIMER_H
+#endif //__TIMER_H__

@@ -1,6 +1,6 @@
 
-#ifndef ROS_CLIENT_H
-#define ROS_CLIENT_H
+#ifndef __CLIENT_H__
+#define __CLIENT_H__
 
 #include "../node/Node.h"
 
@@ -11,7 +11,7 @@ template<typename ServiceT>
 class Client
 {
 public:
-    Client(Node* parentNode, std::string const& serviceName);
+    Client(Node* parentNode, std::string const& service);
 
     virtual void startWorkerThread();
 
@@ -40,10 +40,10 @@ private:
 
 
 template<typename ServiceT>
-Client<ServiceT>::Client(Node* parentNode, std::string const& serviceName)
+Client<ServiceT>::Client(Node* parentNode, std::string const& service)
     : _parent(parentNode)
 {
-    _client = _parent->create_client<ServiceT>(serviceName);
+    _client = _parent->create_client<ServiceT>(service);
     _request = std::make_shared<typename ServiceT::Request>();
 }
 
@@ -92,4 +92,4 @@ rclcpp::Logger Client<ServiceT>::getLogger()
     return _parent->get_logger();
 }
 
-#endif //ROS_CLIENT_H
+#endif //__CLIENT_H__

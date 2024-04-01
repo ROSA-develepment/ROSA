@@ -8,8 +8,11 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_action REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED
+        src/actionclient/ActionClient.cpp
+        src/actionservice/ActionService.cpp
         src/client/Client.cpp
         src/node/Node.cpp
         src/publisher/Publisher.cpp
@@ -20,12 +23,14 @@ add_library(${PROJECT_NAME} SHARED
 
 ament_target_dependencies(${PROJECT_NAME}
         rclcpp
+        rclcpp_action
 )
 
 ament_export_targets(${PROJECT_NAME} HAS_LIBRARY_TARGET)
 ament_export_include_directories(include)
 ament_export_dependencies(
         rclcpp
+        rclcpp_action
 )
 
 install(
@@ -39,7 +44,7 @@ install(
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
         RUNTIME DESTINATION bin
-        INCLUDES DESTINATION include
+        INCLUDES DESTINATION include/
 )
 
 ament_package()
