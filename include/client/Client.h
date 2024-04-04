@@ -11,7 +11,7 @@ template<typename ServiceT>
 class Client
 {
 public:
-    Client(Node* parentNode, std::string const& service);
+    Client(Node* parent, std::string const& service);
 
     virtual void startWorkerThread();
 
@@ -40,11 +40,12 @@ private:
 
 
 template<typename ServiceT>
-Client<ServiceT>::Client(Node* parentNode, std::string const& service)
-    : _parent(parentNode)
+Client<ServiceT>::Client(Node* parent, std::string const& service)
+    : _parent(parent)
+    , _client(_parent->create_client<ServiceT>(service))
+    , _request(std::make_shared<typename ServiceT::Request>())
 {
-    _client = _parent->create_client<ServiceT>(service);
-    _request = std::make_shared<typename ServiceT::Request>();
+
 }
 
 template<typename ServiceT>

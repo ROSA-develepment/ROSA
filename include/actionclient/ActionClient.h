@@ -2,8 +2,9 @@
 #ifndef __ACTIONCLIENT_H__
 #define __ACTIONCLIENT_H__
 
-#include "rclcpp_action/rclcpp_action.hpp"
 #include "../node/Node.h"
+
+#include <rclcpp_action/rclcpp_action.hpp>
 
 
 template<typename Service>
@@ -12,16 +13,17 @@ class ActionClient
 public:
     ActionClient(Node* parent, std::string const& service);
 
-protected:
     std::shared_future<std::shared_ptr<rclcpp_action::ClientGoalHandle<Service>>>
-        asyncSendGoal(typename Service::Goal goal,
-            typename rclcpp_action::Client<Service>::SendGoalOptions options = nullptr);
+        asyncSendGoal();
+
+protected:
+    rclcpp::Logger getLogger();
 
     typename Service::Goal _goal;
     typename rclcpp_action::Client<Service>::SendGoalOptions _options;
 
 private:
-    rclcpp_action::Client<Service> _client;
+    typename rclcpp_action::Client<Service>::SharedPtr _client;
 
     Node* _parent;
 };
@@ -30,15 +32,24 @@ private:
 template<typename Service>
 ActionClient<Service>::ActionClient(Node *parent, std::string const& service)
     : _parent(parent)
+    , _client(rclcpp_action::create_client<Service>(parent, service))
 {
-    _client = rclcpp_action::create_client<Service>(_parent, service);
+
 }
 
 template<typename Service>
 std::shared_future<std::shared_ptr<rclcpp_action::ClientGoalHandle<Service>>>
-ActionClient<Service>::asyncSendGoal(typename Service::Goal goal, typename rclcpp_action::Client<Service>::SendGoalOptions options)
+ActionClient<Service>::asyncSendGoal()
 {
-    return _client.async_send_goal(goal, options);
+    _client->wait_for_action_server();
+
+    return _client->async_send_goal(_goal, _options);
+}
+
+template<typename Service>
+rclcpp::Logger ActionClient<Service>::getLogger()
+{
+    return _parent->get_logger();
 }
 
 #endif //__ACTIONCLIENT_H__
