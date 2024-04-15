@@ -24,6 +24,11 @@ protected:
     virtual void goalResultCallback(
         typename rclcpp_action::ClientGoalHandle<Action>::WrappedResult const& result) = 0;
 
+    template<class Message>
+    void setFeedbackCallback(std::function<void(
+        typename rclcpp_action::ClientGoalHandle<Action>::SharedPtr const& goalHandle,
+        std::shared_ptr<Message const> const& message)> feedback);
+
     rclcpp::Logger getLogger();
 
     typename Action::Goal _goal;
@@ -34,7 +39,6 @@ private:
 
     Node* _parent;
 };
-
 
 template<typename Action>
 ActionClient<Action>::ActionClient(Node *parent, std::string const& service)
@@ -52,6 +56,15 @@ ActionClient<Action>::asyncSendGoal()
     _client->wait_for_action_server();
 
     return _client->async_send_goal(_goal, _options);
+}
+
+template<typename Action>
+template<class Message>
+void ActionClient<Action>::setFeedbackCallback(std::function<void(
+    typename rclcpp_action::ClientGoalHandle<Action>::SharedPtr const& goalHandle,
+    std::shared_ptr<Message const> const& message)> feedback)
+{
+    _options.feedback_callback = feedback;
 }
 
 template<typename Action>
