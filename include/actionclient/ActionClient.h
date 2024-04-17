@@ -7,7 +7,7 @@
 #include <rclcpp_action/rclcpp_action.hpp>
 
 
-template<typename Action>
+template<class Action>
 class ActionClient
 {
 public:
@@ -15,6 +15,8 @@ public:
 
     std::shared_future<std::shared_ptr<rclcpp_action::ClientGoalHandle<Action>>>
         asyncSendGoal();
+
+    void asyncCancelGoal(typename rclcpp_action::ClientGoalHandle<Action>::SharedPtr goalHandle);
 
 protected:
 
@@ -30,6 +32,9 @@ protected:
         std::shared_ptr<Message const> const& message)> feedback);
 
     rclcpp::Logger getLogger();
+    Node* getParent();
+
+    typename rclcpp_action::ClientGoalHandle<Action>::SharedPtr _goalHandle;
 
     typename Action::Goal _goal;
     typename rclcpp_action::Client<Action>::SendGoalOptions _options;
@@ -39,6 +44,7 @@ private:
 
     Node* _parent;
 };
+
 
 template<typename Action>
 ActionClient<Action>::ActionClient(Node *parent, std::string const& service)
@@ -50,12 +56,17 @@ ActionClient<Action>::ActionClient(Node *parent, std::string const& service)
 }
 
 template<typename Action>
-std::shared_future<std::shared_ptr<rclcpp_action::ClientGoalHandle<Action>>>
-ActionClient<Action>::asyncSendGoal()
+std::shared_future<std::shared_ptr<rclcpp_action::ClientGoalHandle<Action>>> ActionClient<Action>::asyncSendGoal()
 {
     _client->wait_for_action_server();
 
     return _client->async_send_goal(_goal, _options);
+}
+
+template<class Action>
+void ActionClient<Action>::asyncCancelGoal(typename rclcpp_action::ClientGoalHandle<Action>::SharedPtr goalHandle)
+{
+    _client->async_cancel_goal(goalHandle);
 }
 
 template<typename Action>
@@ -71,6 +82,12 @@ template<typename Action>
 rclcpp::Logger ActionClient<Action>::getLogger()
 {
     return _parent->get_logger();
+}
+
+template<class Action>
+Node *ActionClient<Action>::getParent()
+{
+    return _parent;
 }
 
 #endif //__ACTIONCLIENT_H__
