@@ -1,6 +1,6 @@
 
-#ifndef ROS_NODE_H
-#define ROS_NODE_H
+#ifndef __NODE_H__
+#define __NODE_H__
 
 #include "rclcpp/rclcpp.hpp"
 
@@ -15,4 +15,4 @@ protected:
     rclcpp::Logger getLogger();
 };
 
-#endif //ROS_NODE_H
+#endif //__NODE_H__

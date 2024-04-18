@@ -1,6 +1,6 @@
 
-#ifndef ROS_TIMER_H
-#define ROS_TIMER_H
+#ifndef __TIMER_H__
+#define __TIMER_H__
 
 #include "rclcpp/rclcpp.hpp"
 
@@ -8,34 +8,58 @@
 class Timer
 {
 public:
-    template<typename Object, typename Duration, typename Method, typename... Args>
-    void createWallTimer(Object *node, Duration duration, Method&& method, Args&& ... args);
+    //template<class Object, class Duration, class Callback, class... Args>
+    //void createWallTimer(Object *node, Duration duration, Callback&& method, Args&& ... args);
+    //
+    //template<class Object, class Duration, class Callback>
+    //void createWallTimer(Object *node, Duration duration, Callback &&method);
 
-    template<typename Object, typename Duration, typename Method>
-    void createWallTimer(Object *node, Duration duration, Method &&method);
+    template<class Object, class Duration>
+    void createWallTimer(Object *node, Duration duration, std::function<void()> &&method);
+
+    //template<class Object, class Duration, class... Args>
+    //void createWallTimer(Object *node, Duration duration, std::function<void(Args&& ... args)> &&method);
 
 private:
+    void cancel();
     rclcpp::TimerBase::SharedPtr _timer;
 };
 
 
-template<typename Object, typename Duration, typename Method, typename... Args>
-void Timer::createWallTimer(Object *node, Duration duration, Method&& method, Args&& ... args)
-{
-    auto wallTimerFunction = [method, args..., node] () {
-        (node->*method)(args...);
-    };
+//template<class Object, class Duration, class Callback, class... Args>
+//void Timer::createWallTimer(Object *node, Duration duration, Callback&& method, Args&& ... args)
+//{
+//    auto wallTimerFunction = [method, args..., node] () {
+//        (node->*method)(args...);
+//    };
+//
+//    _timer = node->create_wall_timer(duration, wallTimerFunction);
+//}
+//
+//template<class Object, class Duration, class Callback>
+//void Timer::createWallTimer(Object *node, Duration duration, Callback &&method)
+//{
+//    auto wallTimerFunction = [method,  node] () {
+//        (node->*method)();
+//    };
+//    _timer = node->create_wall_timer(duration, wallTimerFunction);
+//}
 
-    _timer = node->create_wall_timer(duration, wallTimerFunction);
+template<class Object, class Duration>
+void Timer::createWallTimer(Object *node, Duration duration, std::function<void()> &&method)
+{
+    _timer = node->create_wall_timer(duration, method);
 }
 
-template<typename Object, typename Duration, typename Method>
-void Timer::createWallTimer(Object *node, Duration duration, Method &&method)
+//template<class Object, class Duration, class... Args>
+//void Timer::createWallTimer(Object *node, Duration duration, std::function<void(Args &&...)> &&method)
+//{
+//    _timer = node->create_wall_timer(duration, method);
+//}
+
+void Timer::cancel()
 {
-    auto wallTimerFunction = [method,  node] () {
-        (node->*method)();
-    };
-    _timer = node->create_wall_timer(duration, wallTimerFunction);
+    _timer->cancel();
 }
 
-#endif //ROS_TIMER_H
+#endif //__TIMER_H__

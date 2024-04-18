@@ -1,6 +1,6 @@
 
-#ifndef ROS_SUBSCRIBER_H
-#define ROS_SUBSCRIBER_H
+#ifndef __SUBSCRIBER_H__
+#define __SUBSCRIBER_H__
 
 #include "rclcpp/rclcpp.hpp"
 
@@ -9,7 +9,7 @@ template<typename MessageT>
 class Subscriber
 {
 public:
-    Subscriber(rclcpp::Node* parentNode);
+    Subscriber(rclcpp::Node* parent);
 
     void subscribe(std::string const& topicName, std::function<void(typename MessageT::SharedPtr const)> callback);
 
@@ -20,8 +20,8 @@ private:
 
 
 template<typename MessageT>
-Subscriber<MessageT>::Subscriber(rclcpp::Node* parentNode)
-    : _parent(parentNode)
+Subscriber<MessageT>::Subscriber(rclcpp::Node* parent)
+    : _parent(parent)
 {
 
 }
@@ -36,4 +36,4 @@ void Subscriber<MessageT>::subscribe(std::string const& topicName, std::function
     );
 }
 
-#endif //ROS_SUBSCRIBER_H
+#endif //__SUBSCRIBER_H__
