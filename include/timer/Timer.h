@@ -20,8 +20,8 @@ public:
     //template<class Object, class Duration, class... Args>
     //void createWallTimer(Object *node, Duration duration, std::function<void(Args&& ... args)> &&method);
 
-    void stop();
 private:
+    void cancel();
     rclcpp::TimerBase::SharedPtr _timer;
 };
 
@@ -57,7 +57,7 @@ void Timer::createWallTimer(Object *node, Duration duration, std::function<void(
 //    _timer = node->create_wall_timer(duration, method);
 //}
 
-void Timer::stop()
+void Timer::cancel()
 {
     _timer->cancel();
 }
